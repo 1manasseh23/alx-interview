@@ -1,22 +1,27 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """Prototype: def minOperations(n)"""
 
 
 def minOperations(n):
-    """If n is impossible to achieve, return 0"""
+    """
+    Calculates the fewest number of operations needed
+    to result in exactly n 'H' characters in the file.
+
+    :param n: Number of 'H' characters to achieve
+    :return: Fewest number of operations needed
+    or 0 if impossible
+    """
 
     if n <= 1:
         return 0
 
-    # Find the largest power of 2 that is less
-    # than or equal to n
-    power_of_2 = 1
-    while power_of_2 * 2 <= n:
-        power_of_2 *= 2
+    operations = 0
+    factor = 2
 
-    # Calculate the remaining operations needed
-    remaining = n - power_of_2
-    if remaining == 0:
-        return power_of_2 // 1
-    else:
-        return power_of_2 // 1 + minOperations(remaining)
+    while n > 1:
+        while n % factor == 0:
+            operations += factor
+            n //= factor
+        factor += 1
+
+    return operations
