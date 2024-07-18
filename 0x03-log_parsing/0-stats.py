@@ -25,12 +25,8 @@ def main():
     status_count = defaultdict(int)
     line_count = 0
 
-    pattern = re.compile(r'(\d+\.\d+\.\d+\.\d+) - \[(.*?)\] '
-                         r'"GET /projects/260 HTTP/1.1" (\d{3}) (\d+)')
-
     # Define the regex pattern for the input format
-    # pattern = re.compile(r'(\d+\.\d+\.\d+\.\d+) - \[(.*?)\] "GET
-    # /projects/260 HTTP/1.1" (\d{3}) (\d+)')
+    pattern = re.compile(r'(\d+\.\d+\.\d+\.\d+) - \[(.*?)\] "GET /projects/260 HTTP/1.1" (\d{3}) (\d+)')
 
     try:
         for line in sys.stdin:
