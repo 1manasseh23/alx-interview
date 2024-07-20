@@ -20,7 +20,7 @@ import re
 from collections import defaultdict
 
 def process_line(line, total_size, status_counts):
-    """Processes a valid line and updates metrics."""
+    """Processes a valid log line and updates metrics."""
     match = re.match(r'(\d+\.\d+\.\d+\.\d+) - \[(.*?)\] "GET /projects/260 HTTP/1\.1" (\d{3}) (\d+)', line)
     if match:
         status_code = int(match.group(3))
@@ -32,7 +32,7 @@ def process_line(line, total_size, status_counts):
 
 def print_stats(total_size, status_counts):
     """Prints the calculated statistics."""
-    print(f"Total file size: {total_size}")
+    print(f"File size: {total_size}")
     for code in sorted(status_counts.keys()):
         if status_counts[code] > 0:
             print(f"{code}: {status_counts[code]}")
@@ -45,13 +45,14 @@ def main():
 
     try:
         for line in sys.stdin:
-            total_size, status_counts = process_line(line, total_size, status_counts)
-            line_count += 1
+            line = line.strip()
+            if line:
+                total_size, status_counts = process_line(line, total_size, status_counts)
+                line_count += 1
 
-            if line_count % 10 == 0:
-                print_stats(total_size, status_counts)
-                total_size = 0
-                status_counts.clear()
+                if line_count % 10 == 0:
+                    print_stats(total_size, status_counts)
+                    print()  # Add a newline for separation
 
     except KeyboardInterrupt:
         print_stats(total_size, status_counts)
