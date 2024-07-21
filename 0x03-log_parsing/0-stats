@@ -19,16 +19,16 @@ import sys
 import re
 from collections import defaultdict
 
-def process_line(line, total_size, status_counts):
+def process_line(line, status_counts):
     """Processes a valid log line and updates metrics."""
     match = re.match(r'(\d+\.\d+\.\d+\.\d+) - \[(.*?)\] "GET /projects/260 HTTP/1\.1" (\d{3}) (\d+)', line)
     if match:
-        status_code = int(match.group(3))
+        status_code = match.group(3)
         file_size = int(match.group(4))
-        total_size += file_size
-        if status_code in [200, 301, 400, 401, 403, 404, 405, 500]:
+        if status_code in ["200", "301", "400", "401", "403", "404", "405", "500"]:
             status_counts[status_code] += 1
-    return total_size, status_counts
+        return file_size
+    return 0
 
 def print_stats(total_size, status_counts):
     """Prints the calculated statistics."""
@@ -47,7 +47,8 @@ def main():
         for line in sys.stdin:
             line = line.strip()
             if line:
-                total_size, status_counts = process_line(line, total_size, status_counts)
+                file_size = process_line(line, status_counts)
+                total_size += file_size
                 line_count += 1
 
                 if line_count % 10 == 0:
