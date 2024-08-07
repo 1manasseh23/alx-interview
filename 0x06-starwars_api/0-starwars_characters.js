@@ -1,6 +1,5 @@
 #!/usr/bin/node
 
-// Import the request module to handle HTTP requests
 const request = require('request');
 
 // Check if the correct number of arguments are passed
@@ -9,9 +8,7 @@ if (process.argv.length !== 3) {
   process.exit(1);
 }
 
-// Store the movie ID from the command line argument
 const movieId = process.argv[2];
-// Construct the API URL using the movie ID
 const apiUrl = `https://swapi-api.hbtn.io/api/films/${movieId}/`;
 
 // Make a request to the API to get the movie details
@@ -30,9 +27,8 @@ request(apiUrl, (error, response, body) => {
 
   // Parse the response body to get the film details
   const film = JSON.parse(body);
-  // Get the list of character URLs from the film details
   const characters = film.characters;
-
+  
   // Iterate over each character URL
   characters.forEach((characterUrl) => {
     // Make a request to get the character details
