@@ -36,6 +36,7 @@ request(apiUrl, (error, response, body) => {
     return;
   }
 
+  // Check if the response status is not OK (200)
   if (response.statusCode !== 200) {
     console.error(`Failed to fetch movie data. Status code: ${response.statusCode}`);
     return;
