@@ -1,32 +1,34 @@
-#!/usr/bin/node
-import requests
-import sys
+#!/usr/bin/env node
 
-def get_characters(movie_id):
-    url = f"https://swapi.dev/api/films/{movie_id}/"
-    response = requests.get(url)
-    if response.status_code != 200:
-        print(f"Error: unable to fetch data for movie ID {movie_id}")
-        return
-    
-    data = response.json()
-    character_urls = data['characters']
-    
-    for character_url in character_urls:
-        char_response = requests.get(character_url)
-        if char_response.status_code != 200:
-            print(f"Error: unable to fetch data for character URL {character_url}")
-            continue
-        char_data = char_response.json()
-        print(char_data['name'])
+const axios = require('axios');
+const process = require('process');
 
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: ./0-starwars_characters.py <movie_id>")
-        sys.exit(1)
+if (process.argv.length !== 3) {
+    console.log('Usage: ./0-starwars_characters.js <movie_id>');
+    process.exit(1);
+}
 
-    movie_id = sys.argv[1]
-    get_characters(movie_id)
+const movieId = process.argv[2];
+const url = `https://swapi.dev/api/films/${movieId}/`;
+
+axios.get(url)
+    .then(response => {
+        const characterUrls = response.data.characters;
+        const characterPromises = characterUrls.map(url => axios.get(url));
+
+        Promise.all(characterPromises)
+            .then(characters => {
+                characters.forEach(character => {
+                    console.log(character.data.name);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching character data:', error);
+            });
+    })
+    .catch(error => {
+        console.error('Error fetching movie data:', error);
+    });
 
 
 // // Import the request module to handle HTTP requests
