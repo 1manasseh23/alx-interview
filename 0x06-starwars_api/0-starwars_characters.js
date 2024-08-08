@@ -1,54 +1,20 @@
 #!/usr/bin/node
+const util = require('util');
+const request = util.promisify(require('request'));
+const filmID = process.argv[2];
 
-const request = require('request');
+async function starwarsCharacters (filmId) {
+  const endpoint = 'https://swapi-api.hbtn.io/api/films/' + filmId;
+  let response = await (await request(endpoint)).body;
+  response = JSON.parse(response);
+  const characters = response.characters;
 
-// Check if the correct number of arguments are passed
-if (process.argv.length !== 3) {
-  console.error('Usage: ./0-starwars_characters.js <Movie ID>');
-  process.exit(1);
+  for (let i = 0; i < characters.length; i++) {
+    const urlCharacter = characters[i];
+    let character = await (await request(urlCharacter)).body;
+    character = JSON.parse(character);
+    console.log(character.name);
+  }
 }
 
-const movieId = process.argv[2];
-const apiUrl = `https://swapi-api.hbtn.io/api/films/${movieId}/`;
-
-// Function to get character details
-const getCharacterDetails = (url, callback) => {
-  request(url, (error, response, body) => {
-    if (error) {
-      console.error(error);
-      return;
-    }
-
-    if (response.statusCode !== 200) {
-      console.error(`Failed to fetch character data. Status code: ${response.statusCode}`);
-      return;
-    }
-
-    const character = JSON.parse(body);
-    callback(character.name);
-  });
-};
-
-// Main function to fetch movie details and characters
-request(apiUrl, (error, response, body) => {
-  if (error) {
-    console.error(error);
-    return;
-  }
-
-  // Check if the response status is not OK (200)
-  if (response.statusCode !== 200) {
-    console.error(`Failed to fetch movie data. Status code: ${response.statusCode}`);
-    return;
-  }
-
-  const film = JSON.parse(body);
-  const characters = film.characters;
-
-  // Iterate over each character URL in order
-  characters.forEach((characterUrl) => {
-    getCharacterDetails(characterUrl, (name) => {
-      console.log(name);
-    });
-  });
-});
+starwarsCharacters(filmID);
