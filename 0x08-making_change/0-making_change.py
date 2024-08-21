@@ -26,9 +26,22 @@ def makeChange(coins, total):
     # for each value up to the total
     dp = [float('inf')] * (total + 1)
     dp[0] = 0
-
+    """
     for coin in coins:
         for i in range(coin, total + 1):
             dp[i] = min(dp[i], dp[i - coin] + 1)
 
+    return dp[total] if dp[total] != float('inf') else -1
+    """
+    coins.sort(reverse=True)
+
+    for coin in coins:
+        for i in range(coin, total + 1):
+            # Only update dp[i] if we can make a smaller number
+            # of coins using the current coin
+            if dp[i - coin] + 1 < dp[i]:
+                dp[i] = dp[i - coin] + 1
+
+    # If dp[total] is still infinity, it means the total cannot
+    # be met by any combination of coins
     return dp[total] if dp[total] != float('inf') else -1
