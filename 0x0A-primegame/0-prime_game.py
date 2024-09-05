@@ -11,9 +11,11 @@ def sieve_of_eratosthenes(max_n):
                 sieve[j] = False
     return sieve
 
+
 def count_primes_up_to_n(n, sieve):
     """Counts how many prime numbers exist up to n using a sieve"""
     return sum(sieve[:n + 1])
+
 
 def isWinner(x, nums):
     """
@@ -27,10 +29,10 @@ def isWinner(x, nums):
 
     # Find the largest number in nums
     max_n = max(nums)
-    
+
     # Create a sieve of prime numbers up to max_n
     sieve = sieve_of_eratosthenes(max_n)
-    
+
     # Variables to keep track of wins
     maria_wins = 0
     ben_wins = 0
@@ -38,7 +40,7 @@ def isWinner(x, nums):
     for n in nums:
         # Count how many primes are up to n
         primes_count = count_primes_up_to_n(n, sieve)
-        
+
         # Maria wins if the count of primes is odd, Ben wins if even
         if primes_count % 2 == 1:
             maria_wins += 1
@@ -51,4 +53,3 @@ def isWinner(x, nums):
         return "Ben"
     else:
         return None
-
